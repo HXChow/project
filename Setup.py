@@ -36,6 +36,11 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.spinBox_5.setRange(12, 24)
         self.spinBox_6.setRange(1, 5)
         self.spinBox_7.setRange(0, 50)
+        
+        #亮度，对比度，锐度lineEdit框初始值
+        self.lineEdit_11.setText(str(0))
+        self.lineEdit_12.setText(str(0))
+        self.lineEdit_23.setText(str(0))
 
         # tab1
         self.spinBox.valueChanged.connect(self.Valuechange)
