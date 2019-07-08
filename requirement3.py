@@ -4,11 +4,21 @@
 import exifread
 import os
 import natsort
-import re
-
+import tkinter
+import tkinter.messagebox
+import time
 #
 # pic_path='C:/Users/Mr.Chow/Desktop/test/picture'
 # num = 0
+def display_time(func):
+    def wrapper(*args):
+        time_star=time.time()
+        result=func(*args)
+        time_stop=time.time()
+        total_time=str("总耗时{:.2f}s".format(time_stop-time_star))
+        tkinter.messagebox.showinfo("提示", total_time)
+        return result
+    return wrapper
 
 def exif_image(filename,mode):
     """
@@ -53,10 +63,9 @@ def exif_image(filename,mode):
             new_name = pic_path + '/' + new_name
         num+=1
     os.rename(filename, new_name)
-
+@display_time
 def rename(pic_path,i):
     global num
-    t=0
     num=0
     for filename in natsort.natsorted(os.listdir(pic_path)):       #遍历地址下文件名
         filename=pic_path+'/'+filename        #获得文件路径
@@ -65,14 +74,11 @@ def rename(pic_path,i):
             try:
                 exif_image(filename,i)
             except  FileExistsError:
-                print("文件存在 无法重命名  请删除后再试")
+                tkinter.messagebox.showinfo("提示","文件存在 无法重命名  请删除后再试")
                 break
             except  KeyError:
-                print("没有关键信息 无法重命名")
+                tkinter.messagebox.showinfo("没有关键信息 无法重命名")
                 break
-            else:
-                print("重命名成功")
-        t+=1
 if __name__=='__main__':
     pic_path = 'C:/Users/Mr.Chow/Desktop/test/picture'
     rename(pic_path,4)

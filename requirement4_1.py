@@ -1,8 +1,10 @@
 import numpy
 from PIL import Image ,ImageFilter
-from pylab import *
 import natsort
 import os
+import time
+import tkinter
+from tkinter import messagebox
 
 # image_path='C:/Users/73497/Desktop/photo'
 # image_name='123.jpg'
@@ -12,6 +14,15 @@ import os
 # print(arr.shape)
 # print(arr[0][0])
 
+def display_time(func):
+    def wrapper(*args):
+        time_star=time.time()
+        result=func(*args)
+        time_stop=time.time()
+        total_time=str("总耗时{:.2f}s".format(time_stop-time_star))
+        tkinter.messagebox.showinfo("提示", total_time)
+        return result
+    return wrapper
 
 def blackWithe(imagename):   #黑白
     # r,g,b = r*0.299+g*0.587+b*0.114
@@ -72,7 +83,7 @@ def fudiao(imagename):  #浮雕滤镜
 
     return pic
 
-
+@display_time
 def picsave(image_path,mode):
     """
     :param image_path: 图片文件夹地址
@@ -106,7 +117,6 @@ def picsave(image_path,mode):
                 bianjie(filename).save(filename)
             if mode is 8:
                 fudiao(filename).save(filename)
-
 
 
 def picshow(filename,mode):

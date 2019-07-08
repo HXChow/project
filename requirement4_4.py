@@ -1,6 +1,19 @@
 import cv2
 import os
 import natsort
+import time
+import tkinter
+from tkinter import messagebox
+
+def display_time(func):
+    def wrapper(*args):
+        time_star=time.time()
+        result=func(*args)
+        time_stop=time.time()
+        total_time=str("总耗时{:.2f} s".format(time_stop-time_star))
+        tkinter.messagebox.showinfo("提示", total_time)
+        return result
+    return wrapper
 
 
 def on_mouse(event, x, y, flags, param):
@@ -38,8 +51,7 @@ def on_mouse(event, x, y, flags, param):
         width = abs(point1[0] - point2[0])
         height = abs(point1[1] -point2[1])
         print(point1[0],point1[1],point2[0],point2[1])
-
-
+@display_time
 def main(file_path,save_path):
     """
 
@@ -67,7 +79,8 @@ def main(file_path,save_path):
 
 
 
+
 if __name__ == '__main__':
-    file_path = 'C:/Users/Mr.Chow/Desktop/test/picture/20190622_130525.jpg'
-    save_path = 'c:/users/Mr.Chow/Desktop/test'
+    file_path = 'C:/users//73497/Desktop/photo1/test3/25.jpg'
+    save_path = 'C:/users//73497/Desktop/photo1/test3/123'
     main(file_path,save_path)

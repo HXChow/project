@@ -2,6 +2,19 @@ import cv2 as cv
 import numpy as np
 import natsort
 import os
+import tkinter
+import time
+from tkinter import messagebox
+
+def display_time(func):
+    def wrapper(*args):
+        time_star=time.time()
+        result=func(*args)
+        time_stop=time.time()
+        total_time=str("总耗时{:.2f}s".format(time_stop-time_star))
+        tkinter.messagebox.showinfo("提示", total_time)
+        return result
+    return wrapper
 
 def contrast_Ratio_brightness(args):
     # global trackbarName1,trackbarName2,trackbarName3,windowName
@@ -59,7 +72,7 @@ def picshow(img_dir):
     cv.waitKey(0)
     cv.destroyAllWindows()
 
-
+@display_time
 def picsave(image_path,a,g,p):
     """
 
@@ -89,6 +102,7 @@ def picsave(image_path,a,g,p):
             dstImage = cv.addWeighted(image, a, mask, 1 - a, g)
             dstImage = cv.filter2D(dstImage, -1, kernel_sharpen_1)
             cv.imwrite(filename,dstImage,[int(cv.IMWRITE_JPEG_QUALITY),100])
+    tkinter.messagebox.showinfo('提示', '操作完成')
 
 
 if __name__=='__main__':

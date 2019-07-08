@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import sys
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import *
-from MainUI import Ui_MainWindow
 import os
+import sys
+import cv2
+import time
+import tkinter
+from PyQt5 import QtGui
+from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from MainUI import Ui_MainWindow
 import requirement1
 import requirement2
 import requirement3
@@ -15,14 +20,14 @@ import requirement4_3
 import requirement4_4
 #import requirement7
 
-
 class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
-        # 让图片自适应label大小
+        # 让图片或视频自适应label大小
         self.label_15.setScaledContents(True)
         self.label_22.setScaledContents(True)
+        self.label_27.setScaledContents(True)
         # 设置计数器上下限
         self.spinBox.setRange(0, 1000)
         self.spinBox_2.setRange(1, 1000)
@@ -41,12 +46,11 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.NameBtn.clicked.connect(self.selectName)
         self.ConfirmBtn.clicked.connect(self.Confirm)
 
-        # tab2
         self.SelectFileBtn_2.clicked.connect(self.slot_btn_chooseDir_2)
         self.SelectTypeBtn.clicked.connect(self.selectStyle)
         self.ConfirmBtn_2.clicked.connect(self.Confirm_2)
 
-        # tab3
+        # tab 2
         self.SelectPhoto.clicked.connect(self.OpenImage)
         self.SelectFileBtn_3.clicked.connect(self.slot_btn_chooseDir_3)
         self.radioButton.clicked.connect(self.Filter_1)
@@ -64,7 +68,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.ConfirmBtn_4.clicked.connect(self.Confirm_3)
         self.ConfirmBtn_8.clicked.connect(self.Confirm_3_1)
 
-        # tab 4
+        # tab 3
         self.SelectPhoto_3.clicked.connect(self.slot_btn_chooseFile)
         self.SelectPhoto_4.clicked.connect(self.slot_btn_chooseFile_2)
         self.SelectFileBtn_5.clicked.connect(self.slot_btn_chooseDir_5)
@@ -75,7 +79,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.ConfirmBtn_10.clicked.connect(self.Process_3)
         #self.ConfirmBtn_5.clicked.connect(self.Process_4)
 
-        # tab 5
+        # tab 4
         self.SelectFileBtn_4.clicked.connect(self.slot_btn_chooseDir_4)
         self.NameBtn_2.clicked.connect(self.selectName_2)
         self.SelectSaveAdressBtn_3.clicked.connect(self.slot_btn_choosesave_2)
@@ -83,13 +87,11 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.spinBox_6.valueChanged.connect(self.Valuechange_6)
         self.ConfirmBtn_7.clicked.connect(self.Confirm_4)
 
-        #tab 6
+        #tab 5
         self.SelectVideo.clicked.connect(self.slot_btn_chosseFile_3)
         self.SelectVideo_2.clicked.connect(self.slot_btn_chosseFile_4)
         self.SelectPhoto_5.clicked.connect(self.slot_btn_chooseFile_5)
         self.SelectLogo.clicked.connect(self.slot_btn_chooseFile_6)
-
-
 
     #tab1
     def Valuechange(self, value):
@@ -101,86 +103,85 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def slot_btn_chooseDir(self, dir_choose):
         dir_choose = QFileDialog.getExistingDirectory(self, "选取文件夹", os.getcwd())
         if dir_choose == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_choose) != 0):
             self.lineEdit.setText(dir_choose)
-            print(dir_choose)
+            #print(dir_choose)
 
         requirement1.traverse_photo(dir_choose, self.spinBox.value(), self.spinBox_2.value())
 
     def slot_btn_chooseMutiFile(self):
         dir_files, ok = QFileDialog.getOpenFileNames(None,
                                                      "多文件选择", os.getcwd(),"All Files (*);;PDF Files (*.pdf);;Text Files (*.txt)")
-        print(ok)
+        #print(ok)
         if ok and len(dir_files) == 0:
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_files) != 0):
             self.lineEdit_3.setText(' '.join(dir_files))
-            print(dir_files)
-            print(self.lineEdit_3.text())
+            #print(dir_files)
+            #print(self.lineEdit_3.text())
 
     def slot_btn_choosesave(self):
         dir_save = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_save == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_save) != 0):
             self.lineEdit_2.setText(dir_save)
-            print(dir_save)
+            #print(dir_save)
 
     def selectName(self):
         name,ok = QInputDialog.getText(self, "输入名字", "输入新建文件夹名称:",
                                         QLineEdit.Normal)
         if name == "":
-            print("\n取消命名")
+            #print("\n取消命名")
             return
         if ok and (len(name) != 0):
             self.lineEdit_8.setText(name)
-            print(name)
+            #print(name)
 
     def Confirm(self):
         dest_dir=self.lineEdit_2.text()
         file_path=self.lineEdit_3.text()
-        file_path=file_path.split(" ")              #list 转 str
+        file_path=file_path.split(" ")              #str 转 list
         filename=self.lineEdit_8.text()
         requirement2.copy_files( dest_dir,  file_path, filename)
 
-    # tab2
+
     def slot_btn_chooseDir_2(self):
         dir_choose = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_choose == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_choose) != 0):
             self.lineEdit_6.setText(dir_choose)
-            print(dir_choose)
+            #print(dir_choose)
 
     def selectStyle(self, mode):
         list = ["品牌", "拍摄时间", "作者信息", "系统排序"]
         style, ok = QInputDialog.getItem(self, "排序方式", "请选择照片排序方式", list)
         if style == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if ok:
             self.lineEdit_7.setText(style)
-            print(style)
+            #print(style)
 
     def Confirm_2(self):
         filename = self.lineEdit_6.text()
         mode = self.lineEdit_7.text()
         requirement3.rename(filename, mode)
 
-    # tab 3
+    # tab 2
     def slot_btn_chooseDir_3(self, dir_choose):
         dir_choose = QFileDialog.getExistingDirectory(self, "选取文件夹", os.getcwd())
         if dir_choose == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_choose) != 0):
             self.lineEdit_15.setText(dir_choose)
-
 
     def OpenImage(self):
         imgName, imgType = QFileDialog.getOpenFileName(None,
@@ -188,7 +189,8 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         jpg = QPixmap(imgName)
         self.label_15.setPixmap(jpg)
         if imgName == "":
-            print("\n取消选择")
+            #print("\n取消选择")
+            return
         if (len(imgName)!=0):
             self.lineEdit_16.setText(imgName)
 
@@ -258,7 +260,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
             requirement4_1.picsave(image_path, 7)
         if self.radioButton_8.isChecked():
             requirement4_1.picsave(image_path, 8)
-        print("OK")
+        #print("OK")
 
     def Confirm_3_1(self):
         image_path = self.lineEdit_15.text()
@@ -266,9 +268,9 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         g = self.spinBox_4.value()
         p = self.spinBox_7.value()
         requirement4_2.picsave(image_path, a, g, p)
-        print("OK")
+        #print("OK")
 
-    # tab 4
+    # tab 3
     def slot_btn_chooseFile(self):
         imgName, imgType = QFileDialog.getOpenFileName(None,
                                                            "打开图片", os.getcwd(), "", "*.jpg;;*.png;;All Files(*)")
@@ -276,7 +278,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.label_22.setPixmap(jpg)
 
         if imgName == "":
-                print("\n取消选择")
+                #print("\n取消选择")
                 return
         if (len(imgName) != 0):
                 self.lineEdit_17.setText(imgName)
@@ -288,7 +290,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         jpg = QPixmap(imgName)
         self.label_22.setPixmap(jpg)
         if imgName == "":
-                print("\n取消选择")
+                #print("\n取消选择")
                 return
         if (len(imgName) != 0):
                 self.lineEdit_18.setText(str(imgName))
@@ -296,7 +298,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def slot_btn_chooseDir_5(self):
         dir_choose = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_choose == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_choose) != 0):
             self.lineEdit_24.setText(dir_choose)
@@ -304,7 +306,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def slot_btn_choosesave_3(self):
         dir_save = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_save == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_save) != 0):
             self.lineEdit_25.setText(dir_save)
@@ -316,7 +318,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.label_22.setPixmap(jpg)
 
         if imgName == "":
-                print("\n取消选择")
+                #print("\n取消选择")
                 return
         if (len(imgName) != 0):
                 self.lineEdit_26.setText(imgName)
@@ -324,7 +326,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def slot_btn_choosesave_4(self):
         dir_save = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_save == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_save) != 0):
             self.lineEdit_27.setText(dir_save)
@@ -348,11 +350,11 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     #     requirement7.delgreen(image_path1, image_path2)
 
 
-    # tab 5
+    # tab 4
     def slot_btn_chooseDir_4(self):
         dir_choose = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_choose == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_choose) != 0):
             self.lineEdit_9.setText(dir_choose)
@@ -366,7 +368,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def slot_btn_choosesave_2(self):
         dir_save = QFileDialog.getExistingDirectory(self, "选择文件夹", os.getcwd())
         if dir_save == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(dir_save) != 0):
             self.lineEdit_45.setText(dir_save)
@@ -385,30 +387,60 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         num = self.spinBox_6.value()
         requirement4.CompositeVideo(im_dir, save_dir, VideoName, fps, num)
 
-    #tab 6
+    #tab 5
     def slot_btn_chosseFile_3(self):
-        fileName_choose, filetype = QFileDialog.getOpenFileName(self,
-                                                               "选取文件",os.getcwd(),"All Files (*);;Text Files (*.txt)")
-        if fileName_choose == "":
-            print("\n取消选择")
-            return
-        if(len(fileName_choose)!=0):
-            self.lineEdit_22.setText(fileName_choose)
+        global videoName  # 在这里设置全局变量以便在线程中使用
+        videoName, videoType = QFileDialog.getOpenFileName(self,  # 返回路径下视频的全名称
+                                                           "打开视频",os.getcwd(),
+                                                           #"",
+                                                           " *.mp4;;*.avi;;All Files (*)")
+        if(len(videoName)!=0):
+            self.lineEdit_22.setText(videoName)
+
+        th = Thread(self)
+        th.changePixmap.connect(self.setImage)
+        th.start()
+
+        # fileName_choose, filetype = QFileDialog.getOpenFileName(self,
+        #                                                        "选取文件",os.getcwd(),"All Files (*);;Text Files (*.txt)")
+        # if fileName_choose == "":
+        #     #print("\n取消选择")
+        #     return
+        # if(len(fileName_choose)!=0):
+        #     self.lineEdit_22.setText(fileName_choose)
+
+    # def setImage(self, image):
+    #     self.label_27.setPixmap(QPixmap.fromImage(image))
 
     def slot_btn_chosseFile_4(self):
-        fileName_choose, filetype = QFileDialog.getOpenFileName(self,
-                                                               "选取文件",os.getcwd(),"All Files (*);;Text Files (*.txt)")
-        if fileName_choose == "":
-            print("\n取消选择")
-            return
-        if(len(fileName_choose)!=0):
-            self.lineEdit_21.setText(fileName_choose)
+        global videoName  # 在这里设置全局变量以便在线程中使用
+        videoName, videoType = QFileDialog.getOpenFileName(self,  # 返回路径下视频的全名称
+                                                           "打开视频", os.getcwd(),
+                                                           # "",
+                                                           " *.mp4;;*.avi;;All Files (*)")
+        if (len(videoName) != 0):
+            self.lineEdit_21.setText(videoName)
+
+        th = Thread(self)
+        th.changePixmap.connect(self.setImage)
+        th.start()
+        # fileName_choose, filetype = QFileDialog.getOpenFileName(self,
+        #                                                        "选取文件",os.getcwd(),"All Files (*);;Text Files (*.txt)")
+        # if fileName_choose == "":
+        #     #print("\n取消选择")
+        #     return
+        # if(len(fileName_choose)!=0):
+        #     self.lineEdit_21.setText(fileName_choose)
+
+    def setImage(self, image):
+        self.label_27.setPixmap(QPixmap.fromImage(image))
+
 
     def slot_btn_chooseFile_5(self):
         imgName, imgType = QFileDialog.getOpenFileName(None,
                                                        "打开图片", os.getcwd(), "", "*.jpg;;*.png;;All Files(*)")
         if imgName == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(imgName) != 0):
             self.lineEdit_19.setText(imgName)
@@ -418,14 +450,31 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
                                                        "打开图片", os.getcwd(), "", "*.jpg;;*.png;;All Files(*)")
 
         if imgName == "":
-            print("\n取消选择")
+            #print("\n取消选择")
             return
         if (len(imgName) != 0):
             self.lineEdit_20.setText(imgName)
 
+class Thread(QThread):#采用线程来播放视频
 
+    changePixmap = pyqtSignal(QtGui.QImage)
+    def run(self):
+        cap = cv2.VideoCapture(videoName)
+        while (cap.isOpened()==True):
+            ret, frame = cap.read()
+            if ret:
+                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                convertToQtFormat = QtGui.QImage(rgbImage.data, rgbImage.shape[1], rgbImage.shape[0], QImage.Format_RGB888)#在这里可以对每帧图像进行处理，
+                p = convertToQtFormat.scaled(640, 480, Qt.KeepAspectRatio)
+                self.changePixmap.emit(p)
+                time.sleep(0.05) #控制视频播放的速度
+            else:
+                break
 
 if __name__ == '__main__':
+    root = tkinter.Tk()
+    root.withdraw()  # 隐藏主窗口
+    root.wm_attributes('-topmost', 1)  # 消息框置顶
     app = QApplication(sys.argv)
     myWin = MyMainWindow()
     myWin.show()
