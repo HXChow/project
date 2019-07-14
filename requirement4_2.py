@@ -6,15 +6,7 @@ import tkinter
 import time
 from tkinter import messagebox
 
-def display_time(func):
-    def wrapper(*args):
-        time_star=time.time()
-        result=func(*args)
-        time_stop=time.time()
-        total_time=str("总耗时{:.2f}s".format(time_stop-time_star))
-        tkinter.messagebox.showinfo("提示", total_time)
-        return result
-    return wrapper
+
 
 def contrast_Ratio_brightness(args):
     # global trackbarName1,trackbarName2,trackbarName3,windowName
@@ -42,37 +34,37 @@ def contrast_Ratio_brightness(args):
 
 def picshow(img_dir):
     global trackbarName1, trackbarName2, trackbarName3, windowName,image
+    if os.path.splitext(img_dir)[1] == ".jpg":
     # cv.namedWindow("Saber",0)
     # cv.resizeWindow("Saber", 640, 480)
     # cv.imshow("Saber", image)
-    image = cv.imread(img_dir)
-    trackbarName1 = "Ratio"
-    trackbarName2 = "Bright"
-    trackbarName3 = "Sharpness"
-    windowName = "dstImage"
-    a = 10  # 设置a的初值。
-    g = 30  # 设置g的初值。
-    p = 50
-    count1 = 20  # 设置a的最大值
-    count2 = 100  # 设置g的最大值
-    count3 = 50
-    # 给滑动窗口命名，该步骤不能缺少！而且必须和需要显示的滑动条窗口名称一致。
-    cv.namedWindow(windowName,0)
-    # cv.resizeWindow(windowName, 640, 480)
+        image = cv.imread(img_dir)
+        trackbarName1 = "Ratio"
+        trackbarName2 = "Bright"
+        trackbarName3 = "Sharpness"
+        windowName = "dstImage"
+        a = 10  # 设置a的初值。
+        g = 30  # 设置g的初值。
+        p = 50
+        count1 = 20  # 设置a的最大值
+        count2 = 100  # 设置g的最大值
+        count3 = 50
+        # 给滑动窗口命名，该步骤不能缺少！而且必须和需要显示的滑动条窗口名称一致。
+        cv.namedWindow(windowName,0)
+        # cv.resizeWindow(windowName, 640, 480)
 
-    # 第一个参数为滑动条名称，第二个参数为窗口名称，
-    # 第三个参数为滑动条参数，第四个为其最大值，第五个为需要调用的函数名称。
-    cv.createTrackbar(trackbarName1, windowName, a, count1, contrast_Ratio_brightness)
-    cv.createTrackbar(trackbarName2, windowName, g, count2, contrast_Ratio_brightness)
-    cv.createTrackbar(trackbarName3, windowName, p, count3, contrast_Ratio_brightness)
+        # 第一个参数为滑动条名称，第二个参数为窗口名称，
+        # 第三个参数为滑动条参数，第四个为其最大值，第五个为需要调用的函数名称。
+        cv.createTrackbar(trackbarName1, windowName, a, count1, contrast_Ratio_brightness)
+        cv.createTrackbar(trackbarName2, windowName, g, count2, contrast_Ratio_brightness)
+        cv.createTrackbar(trackbarName3, windowName, p, count3, contrast_Ratio_brightness)
 
-    # 下面这步调用函数，也不能缺少。
-    contrast_Ratio_brightness(0)
+        # 下面这步调用函数，也不能缺少。
+        contrast_Ratio_brightness(0)
 
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+        cv.waitKey(0)
+        cv.destroyAllWindows()
 
-@display_time
 def picsave(image_path,a,g,p):
     """
 
@@ -82,27 +74,32 @@ def picsave(image_path,a,g,p):
     :param p:   锐度
     :return:
     """
+    root = tkinter.Tk()
+    root.withdraw()  # 隐藏主窗口
+    root.wm_attributes('-topmost', 1)  # 消息框置顶
     a = 0.1 * a
     g = g - 30
     p = p / 3 + 1
     for filename in natsort.natsorted(os.listdir(image_path)):       #遍历地址下文件名
         filename=image_path+'/'+filename
-        kernel_sharpen_1 = np.array([
-            [-1, -1, -1, -1, -1],
-            [-1, 2, 2, 2, -1],
-            [-1, 2, p, 2, -1],
-            [-1, 2, 2, 2, -1],
-            [-1, -1, -1, -1, -1]]) / float(p)
-        #获得文件路径
         if os.path.splitext(filename)[1] == ".jpg":
-            image= cv.imread(filename)
-            h, w, c = image.shape
-            mask = np.zeros([h, w, c], image.dtype)
-            # cv.addWeighted函数对两张图片线性加权叠加
-            dstImage = cv.addWeighted(image, a, mask, 1 - a, g)
-            dstImage = cv.filter2D(dstImage, -1, kernel_sharpen_1)
-            cv.imwrite(filename,dstImage,[int(cv.IMWRITE_JPEG_QUALITY),100])
-    tkinter.messagebox.showinfo('提示', '操作完成')
+            kernel_sharpen_1 = np.array([
+                [-1, -1, -1, -1, -1],
+                [-1, 2, 2, 2, -1],
+                [-1, 2, p, 2, -1],
+                [-1, 2, 2, 2, -1],
+                [-1, -1, -1, -1, -1]]) / float(p)
+            #获得文件路径
+            if os.path.splitext(filename)[1] == ".jpg":
+                image= cv.imread(filename)
+                h, w, c = image.shape
+                mask = np.zeros([h, w, c], image.dtype)
+                # cv.addWeighted函数对两张图片线性加权叠加
+                dstImage = cv.addWeighted(image, a, mask, 1 - a, g)
+                dstImage = cv.filter2D(dstImage, -1, kernel_sharpen_1)
+                cv.imwrite(filename,dstImage,[int(cv.IMWRITE_JPEG_QUALITY),100])
+    #tkinter.messagebox.showinfo('提示', '操作完成')
+    root.destroy()
 
 
 if __name__=='__main__':

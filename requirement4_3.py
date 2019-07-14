@@ -10,7 +10,7 @@ import numpy as np
 
 
 def on_EVENT_LBUTTONDOWN(event,x,y,flags,param):
-    global t1,t2,img
+    global t1,t2,img,tag
     if event ==cv2.cv2.EVENT_RBUTTONDOWN:
         xy = '%d,%d '% (x, y)
         print (xy)
@@ -21,12 +21,11 @@ def on_EVENT_LBUTTONDOWN(event,x,y,flags,param):
         t2.append([x,y])
         t1.append([x,y])
     if event == cv2.EVENT_LBUTTONDOWN:
-
         xy = '%d,%d '% (x, y)
         print (xy)
-        cv2.circle(img, (x, y), 1, (255, 0, 0), thickness=-1)
-        cv2.putText(img, xy, (x, y), cv2.FONT_HERSHEY_PLAIN,
-                    1.0, (0, 0, 0), thickness=1)
+        # cv2.circle(img, (x, y), 1, (255, 0, 0), thickness=-1)
+        # cv2.putText(img, xy, (x, y), cv2.FONT_HERSHEY_PLAIN,
+        #             1.0, (0, 0, 0), thickness=1)
         cv2.imshow("image", img)
         t1.append([x,y])
 

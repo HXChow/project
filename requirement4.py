@@ -7,16 +7,6 @@ import tkinter.messagebox
 import tkinter
 import time
 
-def display_time(func):
-    def wrapper(*args):
-        time_star=time.time()
-        result=func(*args)
-        time_stop=time.time()
-        total_time=str("总耗时{:.2f} s".format(time_stop-time_star))
-        tkinter.messagebox.showinfo("提示", total_time)
-        return result
-    return wrapper
-@display_time
 def CompositeVideo(im_dir,save_dir,VideoName,fps,num):
     global w,h
     """

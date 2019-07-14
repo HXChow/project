@@ -15,7 +15,9 @@ def traverse_photo(src_dir ,number,t):
     :param number:              #照片最低数量
     :return:
     """
-
+    root = tkinter.Tk()
+    root.withdraw()  # 隐藏主窗口
+    root.wm_attributes('-topmost', 1)  # 消息框置顶
     for i in range(t):
         PhotoNumber = 0
         flag=0
@@ -33,7 +35,7 @@ def traverse_photo(src_dir ,number,t):
         shutil.rmtree(src_dir)                         #删除文件夹内所有文件
         os.mkdir(src_dir)                              #删除文件夹内所有文件
         tkinter.messagebox.showinfo('提示', '文件夹已清空')
-
+    root.destroy()
 if __name__=='__main__':
     path = 'C:\\Users\\73497\\Desktop\\photo'
     traverse_photo(path ,1,1)

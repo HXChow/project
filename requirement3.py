@@ -10,15 +10,6 @@ import time
 #
 # pic_path='C:/Users/Mr.Chow/Desktop/test/picture'
 # num = 0
-def display_time(func):
-    def wrapper(*args):
-        time_star=time.time()
-        result=func(*args)
-        time_stop=time.time()
-        total_time=str("总耗时{:.2f}s".format(time_stop-time_star))
-        tkinter.messagebox.showinfo("提示", total_time)
-        return result
-    return wrapper
 
 def exif_image(filename,mode):
     """
@@ -63,7 +54,7 @@ def exif_image(filename,mode):
             new_name = pic_path + '/' + new_name
         num+=1
     os.rename(filename, new_name)
-@display_time
+
 def rename(pic_path,i):
     global num
     num=0
