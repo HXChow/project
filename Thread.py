@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import *
-import time
 import requirement1
 import requirement2
 import requirement3
@@ -15,8 +14,7 @@ import requirement6
 import requirement7
 import templateAdd
 import vedioAudio
-import ui2
-
+import time
 
 class R1Thread(QThread):
     _signal = pyqtSignal()
@@ -83,6 +81,7 @@ class R5Thread(QThread):  #视频合成
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
     _signal3 = pyqtSignal()
+    #changePixmap = pyqtSignal(QtGui.QImage)
 
     def __init__(self,im_dir,save_dir,VideoName,fps,num):
         super(R5Thread, self).__init__()
@@ -159,6 +158,7 @@ class R8Thread(QThread):     #图片裁剪
 class R9Thread(QThread):    #图片扣绿
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
+    _signal3 = pyqtSignal()
 
     def __init__(self, path_green, path_bg, path_save):
         super(R9Thread, self).__init__()
@@ -173,6 +173,7 @@ class R9Thread(QThread):    #图片扣绿
         total_time = str("总耗时{:.2f} s".format(time_stop - time_star))
         self._signal.emit()
         self._signal2[str].emit(total_time)
+        self._signal3.emit()
 
 
 class R10Thread(QThread):    #滤镜应用全部
@@ -250,12 +251,9 @@ class R13Thread(QThread):    #加音频
         self._signal.emit()
         self._signal2[str].emit(total_time)
 
-# class R14Thread(QThread):#采用线程来播放视频
-#
-#     def __init__(self):
-#         super(R14Thread, self).__init__()
-#
-#     def run(self):
+
+
+
 
 
 

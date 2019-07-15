@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import glob
+import os
 
 
 def pic_water(img_path, logo_path, save_path):  # Picture watermarking 图片加水印
@@ -20,60 +21,99 @@ def pic_water(img_path, logo_path, save_path):  # Picture watermarking 图片加
 
     if p_num <= l_num:  # 图片数量小于等于水印数量
         for i in range(p_num):
-            img = Image.open(img_path+"/00"+np.str(i + 1)+".jpg")
-            logo = Image.open(logo_path+"/"+np.str(i + 1)+".png")
 
-            layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
-            layer.paste(logo, (img.size[0]-logo.size[0], img.size[1]-logo.size[1]))
+            if os.path.exists(img_path + "/0.jpg") is True:  # 判断图片是否从"0.jpg"开始
+                img = Image.open(img_path+"/"+np.str(i)+".jpg")
+                logo = Image.open(logo_path+"/"+np.str(i)+".png")
 
-            img_after = Image.composite(layer, img, layer)
-            # img_after.show()
-            img_after.save(save_path + '/00' + np.str(i) + '.jpg')
+                layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                layer.paste(logo, (img.size[0]-logo.size[0], img.size[1]-logo.size[1]))
+
+                img_after = Image.composite(layer, img, layer)
+                img_after.save(save_path + '/' + np.str(i) + '.jpg')
+            else:
+                img = Image.open(img_path + "/" + np.str(i + 1) + ".jpg")
+                logo = Image.open(logo_path + "/" + np.str(i + 1) + ".png")
+
+                layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+
+                img_after = Image.composite(layer, img, layer)
+                img_after.save(save_path + '/' + np.str(i + 1) + '.jpg')
 
     else:  # 图片数量大于水印数量
 
         p_times = p_num // l_num
         p_mob = p_num % l_num
 
-        for j in range(p_times):
-            if (j + 1) % 2 != 0:
-                for k in range(l_num):
-                    img = Image.open(img_path + "/00" + np.str(k + 1 + j * l_num) + ".jpg")
-                    logo = Image.open(logo_path + "/" + np.str(k + 1) + ".png")
+        if os.path.exists(img_path + "/0.jpg") is True:  # 判断图片是否从"0.jpg"开始
+            for j in range(p_times):
+                if (j + 1) % 2 != 0:
+                    for k in range(l_num):
+                        img = Image.open(img_path + "/" + np.str(k + j * l_num) + ".jpg")
+                        logo = Image.open(logo_path + "/" + np.str(k) + ".png")
 
-                    layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
-                    layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+                        layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                        layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
 
-                    img_after = Image.composite(layer, img, layer)
-                    # img_after.show()
-                    img_after.save(save_path + '/00' + np.str(k + 1 + j * l_num) + '.jpg')
-            else:
-                for k in range(l_num):
-                    img = Image.open(img_path + "/00" + np.str(k + 1 + j * l_num) + ".jpg")
-                    logo = Image.open(logo_path + "/" + np.str(l_num - k) + ".png")
+                        img_after = Image.composite(layer, img, layer)
+                        img_after.save(save_path + '/' + np.str(k + 1 + j * l_num) + '.jpg')
+                else:
+                    for k in range(l_num):
+                        img = Image.open(img_path + "/" + np.str(k + j * l_num) + ".jpg")
+                        logo = Image.open(logo_path + "/" + np.str(l_num - k - 1) + ".png")
 
-                    layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
-                    layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+                        layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                        layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
 
-                    img_after = Image.composite(layer, img, layer)
-                    # img_after.show()
-                    img_after.save(save_path + '/00' + np.str(k + 1 + j * l_num) + '.jpg')
-        for h in range(p_mob):
-            img = Image.open(img_path + "/00" + np.str(h + 1 + p_times * l_num) + ".jpg")
-            logo = Image.open(logo_path + "/" + np.str(h + 1) + ".png")
+                        img_after = Image.composite(layer, img, layer)
+                        img_after.save(save_path + '/' + np.str(k + j * l_num) + '.jpg')
+            for h in range(p_mob):
+                img = Image.open(img_path + "/" + np.str(h + p_times * l_num) + ".jpg")
+                logo = Image.open(logo_path + "/" + np.str(h) + ".png")
 
-            layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
-            layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+                layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
 
-            img_after = Image.composite(layer, img, layer)
-            # img_after.show()
-            img_after.save(save_path + '/00' + np.str(h + 1 + p_times * l_num) + '.jpg')
+                img_after = Image.composite(layer, img, layer)
+                img_after.save(save_path + '/' + np.str(h + p_times * l_num) + '.jpg')
+        else:
+            for j in range(p_times):
+                if (j + 1) % 2 != 0:
+                    for k in range(l_num):
+                        img = Image.open(img_path + "/" + np.str(k + 1 + j * l_num) + ".jpg")
+                        logo = Image.open(logo_path + "/" + np.str(k + 1) + ".png")
+
+                        layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                        layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+
+                        img_after = Image.composite(layer, img, layer)
+                        img_after.save(save_path + '/' + np.str(k + 1 + j * l_num) + '.jpg')
+                else:
+                    for k in range(l_num):
+                        img = Image.open(img_path + "/" + np.str(k + 1 + j * l_num) + ".jpg")
+                        logo = Image.open(logo_path + "/" + np.str(l_num - k) + ".png")
+
+                        layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                        layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+
+                        img_after = Image.composite(layer, img, layer)
+                        img_after.save(save_path + '/' + np.str(k + 1 + j * l_num) + '.jpg')
+            for h in range(p_mob):
+                img = Image.open(img_path + "/" + np.str(h + 1 + p_times * l_num) + ".jpg")
+                logo = Image.open(logo_path + "/" + np.str(h + 1) + ".png")
+
+                layer = Image.new('RGBA', img.size, (255, 255, 255, 0))
+                layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
+
+                img_after = Image.composite(layer, img, layer)
+                img_after.save(save_path + '/' + np.str(h + 1 + p_times * l_num) + '.jpg')
 
 
 if __name__ == '__main__':
 
-    img_path1 = 'F:/summerProject/14back'  # 图片文件夹
-    logo_path1 = 'F:/summerProject/14simple'  # 水印文件夹
-    save_path1 = 'F:/summerProject/new14simple'  # 保存的文件夹
+    img_path1 = 'C:/Users/Mr.Chow/Desktop/demo/picture'  # 图片文件夹
+    logo_path1 = 'C:/Users/Mr.Chow/Desktop/demo/watermark'  # 水印文件夹
+    save_path1 = 'C:/Users/Mr.Chow/Desktop/demo/test'  # 保存的文件夹
 
     pic_water(img_path1, logo_path1, save_path1)

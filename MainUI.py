@@ -12,6 +12,16 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1189, 885)
+        MainWindow.setWindowOpacity(0.9);
+        self.setStyleSheet(
+            'QMainWindow{background-color:qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:1, stop:0 rgba(40, 40, 40, 255), stop:1 rgba(235, 235, 235, 255));}'
+            'QPushButton{background-color:rgb(110,110,110)}'
+            'QPushButton{color:rgb(255,255,255)}'
+            'QPushButton:hover{color:rgb(0,0,0)}'
+            'QPushButton:hover{background-color:rgb(240,240,240)}'
+            'QPushButton{border:1px groove gray;border-radius:5px;padding:1px 2px;}'
+            'QLabel{color:rgb(0,0,0)}'
+        )
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
@@ -120,6 +130,10 @@ class Ui_MainWindow(object):
         self.lineEdit_7.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.lineEdit_7.setFocusPolicy(QtCore.Qt.NoFocus)
         self.lineEdit_7.setObjectName("lineEdit_7")
+        self.textEdit = QtWidgets.QTextEdit(self.tab)
+        self.textEdit.setGeometry(QtCore.QRect(10, 670, 1121, 101))
+        self.textEdit.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.textEdit.setObjectName("textEdit")
         self.tabWidget.addTab(self.tab, "")
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
@@ -384,7 +398,7 @@ class Ui_MainWindow(object):
         self.lineEdit_45.setFocusPolicy(QtCore.Qt.NoFocus)
         self.lineEdit_45.setObjectName("lineEdit_45")
         self.groupBox_12 = QtWidgets.QGroupBox(self.tab_3)
-        self.groupBox_12.setGeometry(QtCore.QRect(10, 350, 451, 261))
+        self.groupBox_12.setGeometry(QtCore.QRect(10, 390, 451, 261))
         self.groupBox_12.setObjectName("groupBox_12")
         self.label_13 = QtWidgets.QLabel(self.groupBox_12)
         self.label_13.setGeometry(QtCore.QRect(20, 40, 72, 15))
@@ -412,31 +426,12 @@ class Ui_MainWindow(object):
         self.ConfirmBtn_7.setGeometry(QtCore.QRect(320, 220, 93, 28))
         self.ConfirmBtn_7.setObjectName("ConfirmBtn_7")
         self.groupBox_7 = QtWidgets.QGroupBox(self.tab_3)
-        self.groupBox_7.setGeometry(QtCore.QRect(489, 10, 681, 621))
+        self.groupBox_7.setGeometry(QtCore.QRect(490, 10, 681, 751))
         self.groupBox_7.setTitle("")
         self.groupBox_7.setObjectName("groupBox_7")
-        self.widget = myVideoWidget(self.groupBox_7)
-        self.widget.setGeometry(QtCore.QRect(0, 0, 681, 621))
-        self.widget.setObjectName("widget")
-        self.groupBox_16 = QtWidgets.QGroupBox(self.tab_3)
-        self.groupBox_16.setGeometry(QtCore.QRect(490, 660, 681, 141))
-        self.groupBox_16.setObjectName("groupBox_16")
-        self.btn_open = QtWidgets.QPushButton(self.groupBox_16)
-        self.btn_open.setGeometry(QtCore.QRect(10, 30, 93, 28))
-        self.btn_open.setObjectName("btn_open")
-        self.btn_play = QtWidgets.QPushButton(self.groupBox_16)
-        self.btn_play.setGeometry(QtCore.QRect(270, 30, 93, 28))
-        self.btn_play.setObjectName("btn_play")
-        self.btn_stop = QtWidgets.QPushButton(self.groupBox_16)
-        self.btn_stop.setGeometry(QtCore.QRect(540, 30, 93, 28))
-        self.btn_stop.setObjectName("btn_stop")
-        self.sld_video = QtWidgets.QSlider(self.groupBox_16)
-        self.sld_video.setGeometry(QtCore.QRect(20, 90, 491, 22))
-        self.sld_video.setOrientation(QtCore.Qt.Horizontal)
-        self.sld_video.setObjectName("sld_video")
-        self.lab_video = QtWidgets.QLabel(self.groupBox_16)
-        self.lab_video.setGeometry(QtCore.QRect(560, 90, 51, 16))
-        self.lab_video.setObjectName("lab_video")
+        self.label_43 = QtWidgets.QLabel(self.groupBox_7)
+        self.label_43.setGeometry(QtCore.QRect(0, 0, 681, 751))
+        self.label_43.setObjectName("label_43")
         self.tabWidget.addTab(self.tab_3, "")
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
@@ -519,7 +514,7 @@ class Ui_MainWindow(object):
         self.lineEdit_30.setFocusPolicy(QtCore.Qt.NoFocus)
         self.lineEdit_30.setObjectName("lineEdit_30")
         self.groupBox_3 = QtWidgets.QGroupBox(self.tab_6)
-        self.groupBox_3.setGeometry(QtCore.QRect(550, 10, 531, 341))
+        self.groupBox_3.setGeometry(QtCore.QRect(590, 10, 531, 341))
         self.groupBox_3.setObjectName("groupBox_3")
         self.label_27 = QtWidgets.QLabel(self.groupBox_3)
         self.label_27.setGeometry(QtCore.QRect(20, 30, 91, 16))
@@ -558,7 +553,7 @@ class Ui_MainWindow(object):
         self.ConfirmBtn_11.setGeometry(QtCore.QRect(410, 290, 93, 28))
         self.ConfirmBtn_11.setObjectName("ConfirmBtn_11")
         self.groupBox_15 = QtWidgets.QGroupBox(self.tab_6)
-        self.groupBox_15.setGeometry(QtCore.QRect(550, 390, 531, 381))
+        self.groupBox_15.setGeometry(QtCore.QRect(590, 390, 531, 381))
         self.groupBox_15.setObjectName("groupBox_15")
         self.label_40 = QtWidgets.QLabel(self.groupBox_15)
         self.label_40.setGeometry(QtCore.QRect(20, 30, 91, 16))
@@ -637,6 +632,17 @@ class Ui_MainWindow(object):
         self.SelectFileBtn_2.setText(_translate("MainWindow", "浏览"))
         self.label_7.setText(_translate("MainWindow", "排序方式"))
         self.SelectTypeBtn.setText(_translate("MainWindow", "选择"))
+        self.textEdit.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">友情提醒：</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">1.不要使用任何含有中文的路径</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">2.排序无特殊需求一般使用系统排序，方便后续操作</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "初步处理"))
         self.label_15.setText(_translate("MainWindow", "                                       图片预览区"))
         self.groupBox_8.setTitle(_translate("MainWindow", "Step1"))
@@ -698,11 +704,7 @@ class Ui_MainWindow(object):
         self.label_13.setText(_translate("MainWindow", "设定帧数"))
         self.label_14.setText(_translate("MainWindow", "重复次数"))
         self.ConfirmBtn_7.setText(_translate("MainWindow", "确认"))
-        self.groupBox_16.setTitle(_translate("MainWindow", "控制面板"))
-        self.btn_open.setText(_translate("MainWindow", "打开"))
-        self.btn_play.setText(_translate("MainWindow", "播放"))
-        self.btn_stop.setText(_translate("MainWindow", "暂停"))
-        self.lab_video.setText(_translate("MainWindow", "0%"))
+        self.label_43.setText(_translate("MainWindow", "                                       视频预览区"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "视频合成"))
         self.groupBox_13.setTitle(_translate("MainWindow", "视频拼接"))
         self.label_26.setText(_translate("MainWindow", "选择文件夹"))
@@ -738,4 +740,3 @@ class Ui_MainWindow(object):
         self.SelectSaveAdressBtn_9.setText(_translate("MainWindow", "浏览"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_6), _translate("MainWindow", "后期处理"))
 
-from myVideoWidget import myVideoWidget

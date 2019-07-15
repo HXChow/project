@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import *
-from PyQt5.QtCore import *
-from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5 import QtGui
+from PyQt5.QtGui import QPixmap,QImage
 from MainUI import Ui_MainWindow
-from myVideoWidget import myVideoWidget
 import os
 import sys
-import PyQt5
 import Thread
 import requirement1
 import requirement2
@@ -25,6 +21,9 @@ import requirement6
 import requirement7
 import templateAdd
 import vedioAudio
+import time
+import cv2
+
 
 class  MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -37,6 +36,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         # 让图片或视频自适应label大小
         self.label_15.setScaledContents(True)
         self.label_22.setScaledContents(True)
+        self.label_43.setScaledContents(True)
 
         # 设置计数器上下限
         self.spinBox.setRange(0, 1000)
@@ -57,12 +57,14 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.lineEdit_23.setText(str(0))
 
         #视频播放区
-        self.player = QMediaPlayer()
-        self.player.setVideoOutput(self.widget)  # 视频播放输出的widget
-        self.btn_open.clicked.connect(self.openVideoFile)  # 打开视频文件按钮
-        self.btn_play.clicked.connect(self.playVideo)  # play
-        self.btn_stop.clicked.connect(self.pauseVideo)  # pause
-        self.player.positionChanged.connect(self.changeSlide)  # change Slide
+        # self.player = QMediaPlayer()
+        # self.player.setVideoOutput(self.widget)  # 视频播放输出的widget
+        # self.btn_open.clicked.connect(self.openVideoFile)  # 打开视频文件按钮
+        # self.btn_play.clicked.connect(self.playVideo)  # play
+        # self.btn_stop.clicked.connect(self.pauseVideo)  # pause
+        # self.player.positionChanged.connect(self.changeSlide)  # change Slide
+
+        # self.btn_open.clicked.connect(self.openVideoFile)
 
         #信号区
         # tab1
@@ -136,20 +138,34 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
 
     #槽函数区
     #播放视频
-    def openVideoFile(self):
-        self.player.setMedia(QMediaContent(QFileDialog.getOpenFileUrl()[0]))  # 选取视频文件
-        self.player.play()  # 播放视频
+    # def openVideoFile(self):
+    #     self.player.setMedia(QMediaContent(QFileDialog.getOpenFileUrl()[0]))  # 选取视频文件
+    #     self.player.play()  # 播放视频
+    #
+    # def playVideo(self):
+    #     self.player.play()
+    #
+    # def pauseVideo(self):
+    #     self.player.pause()
+    #
+    # def changeSlide(self, position):
+    #     self.vidoeLength = self.player.duration() + 0.1
+    #     self.sld_video.setValue(round((position / self.vidoeLength) * 100))
+    #     self.lab_video.setText(str(round((position / self.vidoeLength) * 100, 2)) + '%')
 
-    def playVideo(self):
-        self.player.play()
+    # def openVideoFile(self):
+    #     global videoName  # 在这里设置全局变量以便在线程中使用
+    #     videoName, videoType = QFileDialog.getOpenFileName(self,  # 返回路径下视频的全名称
+    #                                                        "打开视频", os.getcwd(),
+    #                                                        # "",
+    #                                                        " *.mp4;;*.avi;;All Files (*)")
+    #     t =R14Thread(self)
+    #     t.changePixmap.connect(self.setImage)
+    #     t.start()
+    #
+    # def setImage(self, image):
+    #     self.label_43.setPixmap(QPixmap.fromImage(image))
 
-    def pauseVideo(self):
-        self.player.pause()
-
-    def changeSlide(self, position):
-        self.vidoeLength = self.player.duration() + 0.1
-        self.sld_video.setValue(round((position / self.vidoeLength) * 100))
-        self.lab_video.setText(str(round((position / self.vidoeLength) * 100, 2)) + '%')
 
     #tab1
     def Valuechange(self):
@@ -519,11 +535,17 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.t9.Daemon = True
         self.t9._signal.connect(self.set_btn_6)
         self.t9._signal2[str].connect(self.Event)
+        self.t9._signal3.connect(self.Update_4)
         self.t9.start()
 
     def set_btn_6(self):
         self.ConfirmBtn_5.setEnabled(True)
 
+    def Update_4(self):
+        save = self.lineEdit_28.text()
+        display = save + "/" + str(0) + ".jpg"
+        jpg = QPixmap(display)
+        self.label_22.setPixmap(jpg)
 
     # tab 4
     def slot_btn_chooseDir_4(self):
@@ -573,11 +595,20 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         self.ConfirmBtn_7.setEnabled(True)
 
     def Update_3(self):
+        global videoName
         save = self.lineEdit_45.text()
         name = self.lineEdit_10.text()
-        display = PyQt5.QtCore.QUrl("file:///" + save + "/" + name + ".mp4")
-        self.player.setMedia(QMediaContent(display))
-        self.player.play()
+        videoName = save + "/" + name + ".mp4"
+        self.t = R14Thread(self)
+        self.t.changePixmap.connect(self.setImage_2)
+        self.t.start()
+
+    def setImage_2(self, image):
+        self.label_43.setPixmap(QPixmap.fromImage(image))
+
+        # display = PyQt5.QtCore.QUrl("file:///" + save + "/" + name + ".mp4")
+        # self.player.setMedia(QMediaContent(display))
+        # self.player.play()
 
     #tab 5
     #拼接
@@ -725,7 +756,7 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
         path_save = self.lineEdit_32.text()
         distance_to_top = 315
         # templateAdd.temp_add(path_temp, path_image, path_save, distance_to_top)
-        self.t12 = Thread.R11Thread(path_temp, path_image, path_save, distance_to_top)
+        self.t12 = Thread.R12Thread(path_temp, path_image, path_save, distance_to_top)
         self.t12.Daemon = True
         self.t12._signal.connect(self.set_btn_10)
         self.t12._signal2[str].connect(self.Event)
@@ -763,12 +794,39 @@ class  MyMainWindow(QMainWindow, Ui_MainWindow):
                                         QMessageBox.Yes)
 
 
+class R14Thread(QThread):  # 采用线程来播放视频
+
+    changePixmap = pyqtSignal(QtGui.QImage)
+
+    def run(self):
+        cap = cv2.VideoCapture(videoName)
+        while (cap.isOpened() == True):
+            ret, frame = cap.read()
+            if ret:
+                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                convertToQtFormat = QtGui.QImage(rgbImage.data, rgbImage.shape[1], rgbImage.shape[0],
+                                                 QImage.Format_RGB888)  # 在这里可以对每帧图像进行处理，
+                p = convertToQtFormat.scaled(640, 480, Qt.KeepAspectRatio)
+                self.changePixmap.emit(p)
+                time.sleep(0.05)  # 控制视频播放的速度
+            else:
+                break
+
+
 # class myVideoWidget(QVideoWidget):
 #     def __init__(self,parent=None):
 #         super(QVideoWidget,self).__init__(parent)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    myWin = MyMainWindow()
-    myWin.show()
-    sys.exit(app.exec_())
+    s = '2019-07-20 01:00:00'
+    def now():
+        return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    if s > now():
+        app = QApplication(sys.argv)
+        myWin = MyMainWindow()
+        myWin.show()
+        sys.exit(app.exec_())
+    else:
+        sys.exit()
+
+
