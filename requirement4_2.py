@@ -3,10 +3,6 @@ import numpy as np
 import natsort
 import os
 import tkinter
-import time
-from tkinter import messagebox
-
-
 
 def contrast_Ratio_brightness(args):
     # global trackbarName1,trackbarName2,trackbarName3,windowName
@@ -82,6 +78,7 @@ def picsave(image_path,a,g,p):
     p = p / 3 + 1
     for filename in natsort.natsorted(os.listdir(image_path)):       #遍历地址下文件名
         filename=image_path+'/'+filename
+
         if os.path.splitext(filename)[1] == ".jpg":
             kernel_sharpen_1 = np.array([
                 [-1, -1, -1, -1, -1],

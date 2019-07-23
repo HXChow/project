@@ -57,7 +57,7 @@ def pic_water(img_path, logo_path, save_path):  # Picture watermarking 图片加
                         layer.paste(logo, (img.size[0] - logo.size[0], img.size[1] - logo.size[1]))
 
                         img_after = Image.composite(layer, img, layer)
-                        img_after.save(save_path + '/' + np.str(k + 1 + j * l_num) + '.jpg')
+                        img_after.save(save_path + '/' + np.str(k + j * l_num) + '.jpg')
                 else:
                     for k in range(l_num):
                         img = Image.open(img_path + "/" + np.str(k + j * l_num) + ".jpg")
@@ -112,8 +112,8 @@ def pic_water(img_path, logo_path, save_path):  # Picture watermarking 图片加
 
 if __name__ == '__main__':
 
-    img_path1 = 'C:/Users/Mr.Chow/Desktop/demo/picture'  # 图片文件夹
-    logo_path1 = 'C:/Users/Mr.Chow/Desktop/demo/watermark'  # 水印文件夹
-    save_path1 = 'C:/Users/Mr.Chow/Desktop/demo/test'  # 保存的文件夹
+    img_path1 = 'C:/Users/Mr.Chow/Desktop/project/demo/picture'  # 图片文件夹
+    logo_path1 = 'C:/Users/Mr.Chow/Desktop/project/demo/watermark'  # 水印文件夹
+    save_path1 = 'C:/Users/Mr.Chow/Desktop/project/demo/test'  # 保存的文件夹
 
     pic_water(img_path1, logo_path1, save_path1)

@@ -1,9 +1,6 @@
 import cv2
 import os
 import natsort
-import time
-import tkinter
-from tkinter import messagebox
 
 
 def on_mouse(event, x, y, flags, param):

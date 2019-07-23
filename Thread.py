@@ -18,20 +18,26 @@ import time
 
 class R1Thread(QThread):
     _signal = pyqtSignal()
-   # _signal2 = pyqtSignal(str)
-    def __init__(self,dir_choose, value1, value2):
+    _signal2 = pyqtSignal(str)
+    _signal3 = pyqtSignal(str)
+    def __init__(self,src_dir ,number,t,dest_dir,qianzhui,mode):
         super(R1Thread, self).__init__()
-        self.dir_choose = dir_choose
-        self.value1 = value1
-        self.value2 = value2
+        self.src_dir = src_dir
+        self.number = number
+        self.t = t
+        self.dest_dir = dest_dir
+        self.qianzhui = qianzhui
+        self.mode = mode
 
     def run(self):
-        #time_star = time.time()
-        requirement1.traverse_photo(self.dir_choose,self.value1,self.value2)
-        #time_stop = time.time()
-        #total_time = str("耗时{:.2f} s".format(time_stop - time_star))
+        time_star = time.time()
+        s = str(requirement1.traverse_photo(self.src_dir, self.number, self.t, self.dest_dir, self.qianzhui, self.mode))
+        time_stop = time.time()
+        total_time = str("耗时{:.2f} s".format(time_stop - time_star))
+        # print(s)
         self._signal.emit()
-        #self._signal2[str].emit(total_time)
+        self._signal2[str].emit(total_time)
+        self._signal3[str].emit(s)
 
 class R2Thread(QThread):
     _signal2 = pyqtSignal(str)
@@ -61,7 +67,7 @@ class R3Thread(QThread):    #排序
 
 class R4Thread(QThread):   #对比度，亮度，饱和度调整确定
     _signal = pyqtSignal()
-    _signal2 = pyqtSignal()
+    _signal2 = pyqtSignal(str)
     _signal3 = pyqtSignal()
 
     def __init__(self, image_path, a, g, p):
@@ -72,16 +78,19 @@ class R4Thread(QThread):   #对比度，亮度，饱和度调整确定
         self.p = p
 
     def run(self):
+        time_star = time.time()
         requirement4_2.picsave(self.image_path, self.a, self.g, self.p)
+        time_stop = time.time()
+        total_time = str("总耗时{:.2f} s".format(time_stop - time_star))
         self._signal.emit()
-        self._signal2.emit()
+        self._signal2[str].emit(total_time)
         self._signal3.emit()
 
 class R5Thread(QThread):  #视频合成
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
     _signal3 = pyqtSignal()
-    #changePixmap = pyqtSignal(QtGui.QImage)
+    _signal4 = pyqtSignal()
 
     def __init__(self,im_dir,save_dir,VideoName,fps,num):
         super(R5Thread, self).__init__()
@@ -99,11 +108,14 @@ class R5Thread(QThread):  #视频合成
         self._signal.emit()
         self._signal2[str].emit(total_time)
         self._signal3.emit()
+        self._signal4.emit()
 
 
-class R6Thread(QThread):   #加水印
+class R6Thread(QThread):   #拼接
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
+    _signal3 = pyqtSignal()
+    _signal4 = pyqtSignal()
 
     def __init__(self,file_path, save_path, name):
         super(R6Thread, self).__init__()
@@ -118,6 +130,8 @@ class R6Thread(QThread):   #加水印
         total_time = str("总耗时{:.2f} s".format(time_stop - time_star))
         self._signal.emit()
         self._signal2[str].emit(total_time)
+        self._signal3.emit()
+        self._signal4.emit()
 
 class R7Thread(QThread):
     _signal = pyqtSignal()
@@ -199,6 +213,7 @@ class R10Thread(QThread):    #滤镜应用全部
 class R11Thread(QThread):    #加水印
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
+    _signal3 = pyqtSignal()
 
     def __init__(self, img_path, logo_path, save_path):
         super(R11Thread, self).__init__()
@@ -213,10 +228,12 @@ class R11Thread(QThread):    #加水印
         total_time = str("总耗时{:.2f} s".format(time_stop - time_star))
         self._signal.emit()
         self._signal2[str].emit(total_time)
+        self._signal3.emit()
 
 class R12Thread(QThread):    #加模板
     _signal = pyqtSignal()
     _signal2 = pyqtSignal(str)
+    _signal3 = pyqtSignal()
 
     def __init__(self, path_temp, path_image, path_save, distance_to_top):
         super(R12Thread, self).__init__()
@@ -232,6 +249,7 @@ class R12Thread(QThread):    #加模板
         total_time = str("总耗时{:.2f} s".format(time_stop - time_star))
         self._signal.emit()
         self._signal2[str].emit(total_time)
+        self._signal3.emit()
 
 class R13Thread(QThread):    #加音频
     _signal = pyqtSignal()

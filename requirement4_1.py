@@ -2,9 +2,6 @@ import numpy
 from PIL import Image ,ImageFilter
 import natsort
 import os
-import time
-import tkinter
-from tkinter import messagebox
 
 # image_path='C:/Users/73497/Desktop/photo'
 # image_name='123.jpg'

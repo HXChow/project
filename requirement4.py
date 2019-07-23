@@ -3,9 +3,7 @@ import os
 import natsort
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing import concatenate
-import tkinter.messagebox
-import tkinter
-import time
+
 
 def CompositeVideo(im_dir,save_dir,VideoName,fps,num):
     global w,h
@@ -62,8 +60,8 @@ def repeatmv(num,mv_name,save_dir):
     mv_dir = os.path.join(save_dir + '/', str(mv_name) +'.avi')
     mv_dir_2 = os.path.join(save_dir + '/', str(mv_name) + 'reverse' + '.avi')
     movielist = []
-    clip1 = VideoFileClip(mv_dir,target_resolution=(h, w))
-    clip2 = VideoFileClip(mv_dir_2,target_resolution=(h, w))
+    clip1 = VideoFileClip(mv_dir)#,target_resolution=(h, w))
+    clip2 = VideoFileClip(mv_dir_2)#,target_resolution=(h, w))
     t = [clip1, clip2]
 
     for i in range(num):

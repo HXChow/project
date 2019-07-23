@@ -1,4 +1,5 @@
 from moviepy.editor import *
+from natsort import natsorted
 import os
 import numpy as np
 
@@ -16,7 +17,8 @@ def vediost(file_path, save_path, name):
 
     for root, dirs, files in os.walk(file_path):
         # 按文件名排序
-        files.sort()
+        # files.sort()
+        files = natsorted(files)
         # 遍历所有文件
         for file in files:
             # 如果后缀名为 .mp4
